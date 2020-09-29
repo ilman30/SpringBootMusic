@@ -177,6 +177,11 @@ public class BerandaAction {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(pesan);
         }
     }
+    
+    @GetMapping(path = "/api/listalbumsjson/{id}")
+    public ResponseEntity<List<Albums>> findByArtis(@PathVariable("id") Integer id){
+        return ResponseEntity.ok().body(koneksiJdbc.getAlbumsByArtis(id));
+    }
    
     //Lagu
     
@@ -191,6 +196,21 @@ public class BerandaAction {
     @PostMapping(path="/api/listlagudatajson")
     public ResponseEntity<DataTablesResponse<Lagu>> listLaguDataTable(@RequestBody DataTablesRequest dataRequest){
         return ResponseEntity.ok().body(laguService.listLaguDataTable(dataRequest));
+    }
+    
+    @GetMapping(path = "/api/listlagujson/{id}")
+    public ResponseEntity<List<Lagu>> findByAlbums(@PathVariable("id") Integer id){
+        return ResponseEntity.ok().body(koneksiJdbc.getLaguByAlbums(id));
+    }
+    
+    @GetMapping(path = "/api/listlagubygenrejson/{ids}")
+    public ResponseEntity<List<Lagu>> findByGenre(@PathVariable("ids") Integer id){
+        return ResponseEntity.ok().body(koneksiJdbc.getLaguByGenre(id));
+    }
+    
+    @GetMapping(path= "/api/listlagujson")
+    public ResponseEntity<List<Lagu>> listLaguCariJson(){
+        return ResponseEntity.ok().body(koneksiJdbc.getLagu());
     }
     
        

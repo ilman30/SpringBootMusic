@@ -253,20 +253,21 @@ public class KoneksiJdbc {
     //Albums
     
     public List<Albums> getAlbums(){
-        String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums,\n" +
-                     "al.id_labels as idLabel, al.id_artis as idArtis, al.foto_cover as fotoCover, "
-                   + "al.keterangan, ar.id_artis as idArtis, \n" +
-                     "la.id_label as idLabel from Albums al join Artis ar on \n" +
-                     "al.id_artis = ar.id_artis join lables_rekaman la on al.id_labels = la.id_label";
+        String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, "
+                   + "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, "
+                   + "ar.nama_artis as namaArtis, la.nama_labels as namaLabels "
+                   + "from Albums al join Artis ar on al.id_artis = ar.id_artis "
+                   + "join lables_rekaman la on al.id_labels = la.id_label";
         List<Albums> al = jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Albums.class));
         return al;
     }
     
     public Optional<Albums> getAlbumsById(int id){
-        String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums,\n" +
-                     "al.id_labels as idLabel, al.id_artis as idArtis, al.foto_cover as fotoCover, al.keterangan, ar.id_artis as idArtis, \n" +
-                     "la.id_label as idLabel from Albums al join Artis ar on \n" +
-                     "al.id_artis = ar.id_artis join lables_rekaman la on al.id_labels = la.id_label where id_albums = ? ";
+        String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, "
+                   + "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, "
+                   + "ar.nama_artis as namaArtis, la.nama_labels as namaLabels "
+                   + "from Albums al join Artis ar on al.id_artis = ar.id_artis "
+                   + "join lables_rekaman la on al.id_labels = la.id_label where id_albums = ? ";
         Object param[] = {id};
         try{
             return Optional.of(jdbcTemplate.queryForObject(SQL, param, BeanPropertyRowMapper.newInstance(Albums.class)));
@@ -274,6 +275,26 @@ public class KoneksiJdbc {
             return Optional.empty();
         }
 
+    }
+    
+    public List<Albums> getAlbumsByArtis(int id) {
+
+        String baseQuery = "select al.id_album as idAlbum, al.nama_albums as namaAlbums," +
+                " al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis from Albums al join Artis ar on " +
+                "al.id_artis = ar.id_artis where al.id_artis = ? ";
+
+        Object[] param = {id};
+
+        return jdbcTemplate.query(baseQuery, param, (rs, rowNUm) -> {
+            Albums albums = new Albums();
+            albums.setIdAlbum(rs.getInt("idAlbum"));
+            albums.setNamaAlbums(rs.getString("namaAlbums"));
+            albums.setIdLabel(rs.getInt("idLabel"));
+            albums.setIdArtis(rs.getInt("idArtis"));
+            albums.setKeterangan(rs.getString("keterangan"));
+            albums.setNamaArtis(rs.getString("namaArtis"));
+            return albums;
+        });
     }
         
     public void insertAlbums(Albums albums){
@@ -312,19 +333,21 @@ public class KoneksiJdbc {
     }
 
     public List<Albums> getListAlbums(DataTablesRequest req){
-        String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums,\n" +
-                     "al.id_labels as idLabel, al.id_artis as idArtis, al.foto_cover as fotoCover, al.keterangan, ar.id_artis as idArtis, \n" +
-                     "la.id_label as idLabel from Albums al join Artis ar on \n" +
-                     "al.id_artis = ar.id_artis join lables_rekaman la on al.id_labels = la.id_label "
+        String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, "
+                   + "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, "
+                   + "ar.nama_artis as namaArtis, la.nama_labels as namaLabels "
+                   + "from Albums al join Artis ar on al.id_artis = ar.id_artis "
+                   + "join lables_rekaman la on al.id_labels = la.id_label "
                    + "order by " +(req.getSortCol()+1)+ "  " +req.getSortDir()  +" limit ? offset ? ";
         if(!req.getExtraParam().isEmpty()){
             String namaAlbums = (String) req.getExtraParam().get("namaAlbums");
-            SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums,\n" +
-                     "al.id_labels as idLabel, al.id_artis as idArtis, al.foto_cover as fotoCover, al.keterangan, ar.id_artis as idArtis, \n" +
-                     "la.id_label as idLabel from Albums al join Artis ar on \n" +
-                     "al.id_artis = ar.id_artis join lables_rekaman la on al.id_labels = la.id_label "
-                + "WHERE nama_albums like concat('%',?,'%') "
-                + "order by " +(req.getSortCol()+1)+ "  " +req.getSortDir()  +" limit ? offset ? ";
+            SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, "
+                   + "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, "
+                   + "ar.nama_artis as namaArtis, la.nama_labels as namaLabels "
+                   + "from Albums al join Artis ar on al.id_artis = ar.id_artis "
+                   + "join lables_rekaman la on al.id_labels = la.id_label "
+                   + "WHERE nama_albums like concat('%',?,'%') "
+                   + "order by " +(req.getSortCol()+1)+ "  " +req.getSortDir()  +" limit ? offset ? ";
             return jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Albums.class), namaAlbums, req.getLength(), req.getStart());
         }else{
             return jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Albums.class), req.getLength(), req.getStart());
@@ -335,19 +358,21 @@ public class KoneksiJdbc {
     //Lagu
     
     public List<Lagu> getLagu(){
-        String SQL = "select la.id_lagu as idLagu, la.judul, la.durasi, la.id_genre as idGenre, \n" +
-                     "la.id_artis as idArtis, la.id_album as idAlbum, la.file_lagu as fileLagu, g.id_genre as idGenre, \n" +
-                     "ar.id_artis as idArtis, al.id_album as idAlbum from lagu la join genre g on la.id_genre = g.id_genre "
-                   + "join artis ar on la.id_artis = ar.id_artis join albums al on la.id_album = al.id_album";
+        String SQL = "select la.id_lagu as idLagu, la.judul, la.durasi, la.id_genre as idGenre, "
+                         + "la.id_artis as idArtis, la.id_album as idAlbum, la.file_lagu as fileLagu, "
+                         + "g.nama_genre as namaGenre, ar.nama_artis as namaArtis, al.nama_albums as namaAlbums "
+                         + "from lagu la join genre g on la.id_genre = g.id_genre "
+                         + "join artis ar on la.id_artis = ar.id_artis join albums al on la.id_album = al.id_album  ";
         List<Lagu> la = jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Lagu.class));
         return la;
     }
     
     public Optional<Lagu> getLaguById(int id){
-        String SQL = "select la.id_lagu as idLagu, la.judul, la.durasi, la.id_genre as idGenre, \n" +
-                     "la.id_artis as idArtis, la.id_album as idAlbum, la.file_lagu as fileLagu, g.id_genre as idGenre, \n" +
-                     "ar.id_artis as idArtis, al.id_album as idAlbum from lagu la join genre g on la.id_genre = g.id_genre "
-                   + "join artis ar on la.id_artis = ar.id_artis join albums al on la.id_album = al.id_album where id_lagu = ? ";
+        String SQL = "select la.id_lagu as idLagu, la.judul, la.durasi, la.id_genre as idGenre, "
+                         + "la.id_artis as idArtis, la.id_album as idAlbum, la.file_lagu as fileLagu, "
+                         + "g.nama_genre as namaGenre, ar.nama_artis as namaArtis, al.nama_albums as namaAlbums "
+                         + "from lagu la join genre g on la.id_genre = g.id_genre "
+                         + "join artis ar on la.id_artis = ar.id_artis join albums al on la.id_album = al.id_album where id_lagu = ? ";
         Object param[] = {id};
         try{
             return Optional.of(jdbcTemplate.queryForObject(SQL, param, BeanPropertyRowMapper.newInstance(Lagu.class)));
@@ -411,6 +436,60 @@ public class KoneksiJdbc {
             return jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Lagu.class), req.getLength(), req.getStart());
         }
 
+    }
+    
+    public List<Lagu> getLaguByAlbums(int id) {
+
+        String baseQuery = "select la.id_lagu as idLagu, la.judul, la.durasi, la.id_genre as idGenre, "
+                         + "la.id_artis as idArtis, la.id_album as idAlbum, la.file_lagu as fileLagu, "
+                         + "g.nama_genre as namaGenre, ar.nama_artis as namaArtis, al.nama_albums as namaAlbums "
+                         + "from lagu la join genre g on la.id_genre = g.id_genre "
+                         + "join artis ar on la.id_artis = ar.id_artis join albums al on la.id_album = al.id_album  "
+                         + "where la.id_album = ? ";
+
+        Object[] param = {id};
+
+        return jdbcTemplate.query(baseQuery, param, (rs, rowNUm) -> {
+            Lagu lagu = new Lagu();
+            lagu.setIdLagu(rs.getInt("idLagu"));
+            lagu.setJudul(rs.getString("judul"));
+            lagu.setDurasi(rs.getString("durasi"));
+            lagu.setIdGenre(rs.getInt("idGenre"));
+            lagu.setNamaGenre(rs.getString("namaGenre"));
+            lagu.setIdArtis(rs.getInt("idArtis"));
+            lagu.setNamaArtis(rs.getString("namaArtis"));
+            lagu.setIdAlbum(rs.getInt("idAlbum"));
+            lagu.setNamaAlbums(rs.getString("namaAlbums"));
+            lagu.setFileLagu(rs.getString("fileLagu"));
+            return lagu;
+        });
+    }
+    
+    public List<Lagu> getLaguByGenre(int id) {
+
+        String baseQuery = "select la.id_lagu as idLagu, la.judul, la.durasi, la.id_genre as idGenre, "
+                         + "la.id_artis as idArtis, la.id_album as idAlbum, la.file_lagu as fileLagu, "
+                         + "g.nama_genre as namaGenre, ar.nama_artis as namaArtis, al.nama_albums as namaAlbums "
+                         + "from lagu la join genre g on la.id_genre = g.id_genre "
+                         + "join artis ar on la.id_artis = ar.id_artis join albums al on la.id_album = al.id_album  "
+                         + "where la.id_genre = ? ";
+
+        Object[] param = {id};
+
+        return jdbcTemplate.query(baseQuery, param, (rs, rowNUm) -> {
+            Lagu lagu = new Lagu();
+            lagu.setIdLagu(rs.getInt("idLagu"));
+            lagu.setJudul(rs.getString("judul"));
+            lagu.setDurasi(rs.getString("durasi"));
+            lagu.setIdGenre(rs.getInt("idGenre"));
+            lagu.setNamaGenre(rs.getString("namaGenre"));
+            lagu.setIdArtis(rs.getInt("idArtis"));
+            lagu.setNamaArtis(rs.getString("namaArtis"));
+            lagu.setIdAlbum(rs.getInt("idAlbum"));
+            lagu.setNamaAlbums(rs.getString("namaAlbums"));
+            lagu.setFileLagu(rs.getString("fileLagu"));
+            return lagu;
+        });
     }
     
         
