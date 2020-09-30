@@ -254,7 +254,8 @@ public class KoneksiJdbc {
     
     public List<Albums> getAlbums(){
         String SQL = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, "
-                   + "al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, "
+                   + "al.id_labels as idLabel, al.id_artis as idArtis, " 
+                   + "al.foto_cover as fotoCover, al.keterangan, "
                    + "ar.nama_artis as namaArtis, la.nama_labels as namaLabels "
                    + "from Albums al join Artis ar on al.id_artis = ar.id_artis "
                    + "join lables_rekaman la on al.id_labels = la.id_label";
@@ -279,9 +280,12 @@ public class KoneksiJdbc {
     
     public List<Albums> getAlbumsByArtis(int id) {
 
-        String baseQuery = "select al.id_album as idAlbum, al.nama_albums as namaAlbums," +
-                " al.id_labels as idLabel, al.id_artis as idArtis, al.keterangan, ar.nama_artis as namaArtis from Albums al join Artis ar on " +
-                "al.id_artis = ar.id_artis where al.id_artis = ? ";
+        String baseQuery = "select al.id_album as idAlbum, al.nama_albums as namaAlbums, "
+                   + "al.id_labels as idLabel, al.id_artis as idArtis, " 
+                   + "al.foto_cover as fotoCover, al.keterangan, "
+                   + "ar.nama_artis as namaArtis, la.nama_labels as namaLabels "
+                   + "from Albums al join Artis ar on al.id_artis = ar.id_artis "
+                   + "join lables_rekaman la on al.id_labels = la.id_label where al.id_artis = ? ";
 
         Object[] param = {id};
 

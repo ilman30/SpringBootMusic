@@ -5,6 +5,8 @@
  */
 package com.ilman.music.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  *
  * @author ilman
@@ -16,6 +18,15 @@ public class Artis {
     private String foto;
     private String urlWebsite;
     private String keterangan;
+    private MultipartFile file;
+
+    public MultipartFile getFile() {
+        return this.file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    };
 
     public int getIdArtis() {
         return idArtis;

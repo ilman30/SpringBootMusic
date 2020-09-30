@@ -18,12 +18,16 @@ import com.ilman.music.service.ArtisService;
 import com.ilman.music.service.GenreService;
 import com.ilman.music.service.LablesRekamanService;
 import com.ilman.music.service.LaguService;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -106,10 +110,21 @@ public class BerandaAction {
         try{
             String namaFile = artisService.save(file);
             pesan.put("pesan", "Upload File Success: " + namaFile);
+            pesan.put("namaFile", namaFile);
             return ResponseEntity.status(HttpStatus.OK).body(pesan);
         } catch(Exception e){
             pesan.put("pesan","Could not upload the file: " + file.getOriginalFilename() + "!");
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(pesan);
+        }
+    }
+
+    @GetMapping(value = "/api/image/{id}")
+    public ResponseEntity<InputStreamResource>getImage(@PathVariable("id") String id){
+        try{
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(
+                    new InputStreamResource( artisService.load(id).getInputStream() ));
+        }catch(IOException ex){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
         }
     }
     
@@ -182,6 +197,16 @@ public class BerandaAction {
     public ResponseEntity<List<Albums>> findByArtis(@PathVariable("id") Integer id){
         return ResponseEntity.ok().body(koneksiJdbc.getAlbumsByArtis(id));
     }
+
+    @GetMapping(value = "/api/image2/{id}")
+    public ResponseEntity<InputStreamResource>getImage2(@PathVariable("id") String id){
+        try{
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(
+                    new InputStreamResource( albumsService.load(id).getInputStream() ));
+        }catch(IOException ex){
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+        }
+    }
    
     //Lagu
     
@@ -203,8 +228,8 @@ public class BerandaAction {
         return ResponseEntity.ok().body(koneksiJdbc.getLaguByAlbums(id));
     }
     
-    @GetMapping(path = "/api/listlagubygenrejson/{ids}")
-    public ResponseEntity<List<Lagu>> findByGenre(@PathVariable("ids") Integer id){
+    @GetMapping(path = "/api/listlagubygenrejson/{idx}")
+    public ResponseEntity<List<Lagu>> findByGenre(@PathVariable("idx") Integer id){
         return ResponseEntity.ok().body(koneksiJdbc.getLaguByGenre(id));
     }
     
@@ -212,7 +237,5 @@ public class BerandaAction {
     public ResponseEntity<List<Lagu>> listLaguCariJson(){
         return ResponseEntity.ok().body(koneksiJdbc.getLagu());
     }
-    
-       
     
 }
