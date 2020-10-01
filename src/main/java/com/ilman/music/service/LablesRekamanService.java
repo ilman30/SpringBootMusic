@@ -10,6 +10,7 @@ import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.model.LablesRekaman;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
 
@@ -31,5 +32,9 @@ public class LablesRekamanService {
         dataTableRespon.setRecordsTotal(total);
         dataTableRespon.setDraw(req.getDraw());
         return dataTableRespon;
+    }
+
+    public void deleteById(Integer id) throws DataAccessException{
+        koneksiJdbc.deleteLables(id);
     }
 }

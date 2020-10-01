@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class AlbumsService {
     @Autowired
     private KoneksiJdbc koneksiJdbc;
+
+    @Value("${upload.albums}")
+    private String pathFile;
     
     public DataTablesResponse<Albums> listAlbumsDataTable (DataTablesRequest req) {
         DataTablesResponse dataTableRespon = new DataTablesResponse();
@@ -40,9 +44,6 @@ public class AlbumsService {
         dataTableRespon.setDraw(req.getDraw());
         return dataTableRespon;
     }
-    
-    @Value("${upload.albums}")
-    private String pathFile;
     
     public String save (MultipartFile file){
         try{
@@ -72,6 +73,10 @@ public class AlbumsService {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Error: " + e.getMessage());
         }
+    }
+
+    public void deleteById(Integer id) throws DataAccessException{
+        koneksiJdbc.deleteAlbums(id);
     }
     
 }

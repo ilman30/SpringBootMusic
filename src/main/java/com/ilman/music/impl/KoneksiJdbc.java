@@ -11,6 +11,8 @@ import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.Genre;
 import com.ilman.music.model.LablesRekaman;
 import com.ilman.music.model.Lagu;
+import com.ilman.music.model.UserAdmin;
+
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
@@ -104,6 +106,13 @@ public class KoneksiJdbc {
         }
 
     }
+
+    public void deleteLables(Integer id){
+        String SQL = "delete from lables_rekaman where id_label=?";
+        Object parameters[] = {id};
+        
+        jdbcTemplate.update(SQL, parameters);
+    }
         
     //Artis
         
@@ -174,6 +183,13 @@ public class KoneksiJdbc {
             return jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Artis.class), req.getLength(), req.getStart());
         }
 
+    }
+
+    public void deleteArtis(Integer id){
+        String SQL = "delete from artis where id_artis=?";
+        Object parameters[] = {id};
+        
+        jdbcTemplate.update(SQL, parameters);
     }
         
     //Genre
@@ -358,6 +374,13 @@ public class KoneksiJdbc {
         }
 
     }
+
+    public void deleteAlbums(Integer id){
+        String SQL = "delete from albums where id_album=?";
+        Object parameters[] = {id};
+        
+        jdbcTemplate.update(SQL, parameters);
+    }
     
     //Lagu
     
@@ -494,6 +517,21 @@ public class KoneksiJdbc {
             lagu.setFileLagu(rs.getString("fileLagu"));
             return lagu;
         });
+    }
+
+    public void deleteLagu(Integer id){
+        String SQL = "delete from lagu where id_lagu=?";
+        Object parameters[] = {id};
+        
+        jdbcTemplate.update(SQL, parameters);
+    }
+
+    //Admin
+
+    public List<UserAdmin> getUserAdmin(){
+        String SQL = "select user_name as username, user_password as password from user_admin";
+        List<UserAdmin> la = jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(UserAdmin.class));
+        return la;
     }
     
         
