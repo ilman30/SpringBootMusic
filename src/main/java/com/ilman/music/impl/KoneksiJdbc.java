@@ -14,6 +14,7 @@ import com.ilman.music.model.Lagu;
 import com.ilman.music.model.UserAdmin;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -528,10 +529,19 @@ public class KoneksiJdbc {
 
     //Admin
 
-    public List<UserAdmin> getUserAdmin(){
-        String SQL = "select user_name as username, user_password as password from user_admin";
-        List<UserAdmin> la = jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(UserAdmin.class));
-        return la;
+    public Optional<UserAdmin> getUserAdminById(String userAdmin) {
+        String SQL = "select user_name, user_password from user_admin where user_name = ? ";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL, (rs, rownum) -> {
+                UserAdmin kab = new UserAdmin();
+                kab.setUsername(rs.getString("user_name"));
+                kab.setPassword(rs.getString("user_password"));
+                return kab;
+            }, userAdmin));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
     
         
