@@ -5,16 +5,19 @@
  */
 package com.ilman.music.impl;
 
+import com.ilman.music.model.AkunAdmin;
 import com.ilman.music.model.Albums;
 import com.ilman.music.model.Artis;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.Genre;
 import com.ilman.music.model.LablesRekaman;
 import com.ilman.music.model.Lagu;
+import com.ilman.music.model.StatusLogin;
 import com.ilman.music.model.UserAdmin;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -529,19 +532,58 @@ public class KoneksiJdbc {
 
     //Admin
 
-    public Optional<UserAdmin> getUserAdminById(String userAdmin) {
-        String SQL = "select user_name, user_password from user_admin where user_name = ? ";
+    public Optional<AkunAdmin> getUserAdminById(String userAdmin) {
+        String SQL = "select username, keyword from akun_admin where username = ? ";
         try {
             return Optional.of(jdbcTemplate.queryForObject(SQL, (rs, rownum) -> {
-                UserAdmin kab = new UserAdmin();
-                kab.setUsername(rs.getString("user_name"));
-                kab.setPassword(rs.getString("user_password"));
+                AkunAdmin kab = new AkunAdmin();
+                kab.setUsername(rs.getString("username"));
+                kab.setKeyword(rs.getString("keyword"));
                 return kab;
             }, userAdmin));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public StatusLogin cekLoginValid(UserAdmin user){
+        String baseQuery = "select b.group_id, a.user_name from user_admin a inner " +
+                           "join akun_admin b on b.username = a.user_name where tokenkey = ?";
+        StatusLogin slogin = new StatusLogin();
+
+        try{
+            boolean isValid = false;
+            Optional<UserAdmin> hasil = Optional.of(jdbcTemplate.queryForObject(baseQuery, (rs, rownum) ->{
+                UserAdmin use = new UserAdmin();
+                use.setUsername(rs.getString("user_name"));
+                use.setGroupId(rs.getInt("group_id"));
+                return use;
+            },user.getToken()));
+                if (hasil.isPresent()){
+                    if(Objects.equals(user.getUsername(), hasil.get().getUsername())){
+                        baseQuery = "select role_name from roles where role_id = ?";
+                        List<String> rolesName = jdbcTemplate.query(baseQuery, (rs, rownum) -> {
+                            return rs.getString("role_name");
+                        }, hasil.get().getGroupId());
+                        slogin.setIsValid(true);
+                        slogin.setRoles(rolesName);
+                        slogin.setToken(user.getToken());
+                    }else{
+                        slogin.setIsValid(false);
+                    }
+                }
+            }catch (Exception e){
+                slogin.setIsValid(false);
+            e.printStackTrace();
+        }
+        return slogin;
+    }
+
+    public void insertUserLogin(Map<String, Object>param){
+        String SQL = "insert into user_admin (user_name,tokenkey) values (?,?)";
+        Object parameter[] = {param.get("username"), param.get("token")};
+        jdbcTemplate.update(SQL, parameter);
     }
     
         

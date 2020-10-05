@@ -3,6 +3,24 @@ package com.ilman.music.model;
 public class UserAdmin {
     private String username;
     private String password;
+    private String token;
+    private Integer groupId;
+
+    public Integer getGroupId() {
+        return this.groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getUsername() {
         return this.username;
@@ -19,6 +37,5 @@ public class UserAdmin {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 }
