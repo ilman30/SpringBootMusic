@@ -562,13 +562,11 @@ public class KoneksiJdbc {
             },user.getToken()));
                 if (hasil.isPresent()){
                     if(Objects.equals(user.getUsername(), hasil.get().getUsername())){
-                        baseQuery = "select role_name from roles where role_id = ?";
-                        List<String> rolesName = jdbcTemplate.query(baseQuery, (rs, rownum) -> {
-                            return rs.getString("role_name");
-                        }, hasil.get().getGroupId());
+                        List<String> rolesName = getRolesById(hasil.get().getGroupId());
                         slogin.setIsValid(true);
                         slogin.setRoles(rolesName);
                         slogin.setToken(user.getToken());
+                        System.out.println(hasil.get().getGroupId());
                     }else{
                         slogin.setIsValid(false);
                     }
@@ -578,6 +576,18 @@ public class KoneksiJdbc {
             e.printStackTrace();
         }
         return slogin;
+    }
+
+    public List<String> getRolesById(Integer id){
+        String query = "select role_name from roles where role_id = ?";
+
+        Object param[] = {id};
+
+        List<String> prop = jdbcTemplate.query(query, (rs, rownum) ->{
+            return rs.getString("role_name");
+        }, param);
+
+        return prop;
     }
 
     public void insertUserLogin(Map<String, Object>param){

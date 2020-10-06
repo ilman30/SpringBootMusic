@@ -55,6 +55,7 @@ public class UserAdminAction {
 
     @PostMapping("/api/ceklogin")
     public ResponseEntity<StatusLogin>cekUserLoginValid(@RequestBody UserAdmin userAdmin){
+        System.out.println(userAdmin.getUsername());
         return ResponseEntity.ok().body(koneksiJdbc.cekLoginValid(userAdmin));
     }
 
