@@ -5,7 +5,8 @@
  */
 package com.ilman.music.service;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.LablesRekamanJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.model.LablesRekaman;
@@ -21,13 +22,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class LablesRekamanService {
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private LablesRekamanJdbc lablesRekamanJdbc;
     
 //    @Transactional(readOnly = false)
     public DataTablesResponse<LablesRekaman> listLablesRekamanDataTable (DataTablesRequest req) {
         DataTablesResponse dataTableRespon = new DataTablesResponse();
-        dataTableRespon.setData(koneksiJdbc.getListLablesRekaman(req));
-        Integer total = koneksiJdbc.getBanyakLablesRekaman(req);
+        dataTableRespon.setData(lablesRekamanJdbc.getListLablesRekaman(req));
+        Integer total = lablesRekamanJdbc.getBanyakLablesRekaman(req);
         dataTableRespon.setRecordsFiltered(total);
         dataTableRespon.setRecordsTotal(total);
         dataTableRespon.setDraw(req.getDraw());
@@ -35,6 +36,6 @@ public class LablesRekamanService {
     }
 
     public void deleteById(Integer id) throws DataAccessException{
-        koneksiJdbc.deleteLables(id);
+        lablesRekamanJdbc.deleteLables(id);
     }
 }

@@ -5,7 +5,8 @@
  */
 package com.ilman.music.ui;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.LablesRekamanJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.model.LablesRekaman;
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class LablesRekamanAction {
     
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private LablesRekamanJdbc lablesRekamanJdbc;
     
     @Autowired 
     private LablesRekamanService lablesRekamanService;
@@ -43,14 +44,14 @@ public class LablesRekamanAction {
     @PostMapping("/api/savelablesjson")
     public ResponseEntity <Map<String,Object>> savelablesjson(@RequestBody LablesRekaman lablesRekaman){
         Map<String, Object> status = new HashMap<>();
-        koneksiJdbc.insertOrUpdateLables(lablesRekaman);
+        lablesRekamanJdbc.insertOrUpdateLables(lablesRekaman);
         status.put("pesan", "Simpan Berhasil");
         return ResponseEntity.ok().body(status);
     }
     
     @GetMapping(path= "/api/listlablesjson")
     public ResponseEntity<List<LablesRekaman>> listLablesCariJson(){
-        return ResponseEntity.ok().body(koneksiJdbc.getLablesRekaman());
+        return ResponseEntity.ok().body(lablesRekamanJdbc.getLablesRekaman());
     }
     
 }

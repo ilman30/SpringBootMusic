@@ -7,7 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.LoginJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.AkunAdmin;
 import com.ilman.music.model.StatusLogin;
 import com.ilman.music.model.UserAdmin;
@@ -24,14 +25,14 @@ import ch.qos.logback.core.status.Status;
 public class UserAdminAction {
     
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private LoginJdbc loginJdbc;
 
     @PostMapping("/api/login")
     public ResponseEntity<StatusLogin> login(@RequestBody UserAdmin userAdmin) throws Exception {
         StatusLogin statusLogin = new StatusLogin();
         if (userAdmin != null) {
             String username = userAdmin.getUsername();
-            Optional<AkunAdmin> useradmindb = koneksiJdbc.getUserAdminById(username);
+            Optional<AkunAdmin> useradmindb = loginJdbc.getUserAdminById(username);
             if (useradmindb.isPresent() && Objects.equals(username, useradmindb.get().getUsername())) {
                 String password = userAdmin.getPassword();
                 if (Objects.equals(password,useradmindb.get().getKeyword())) {
@@ -41,7 +42,7 @@ public class UserAdminAction {
                     Map<String, Object> paramlogin = new HashMap<>();
                     paramlogin.put("username", username);
                     paramlogin.put("token", token);
-                    koneksiJdbc.insertUserLogin(paramlogin);
+                    loginJdbc.insertUserLogin(paramlogin);
                 } else {
                     statusLogin.setIsValid(false);
                     statusLogin.setToken(null);
@@ -57,7 +58,7 @@ public class UserAdminAction {
     @PostMapping("/api/ceklogin")
     public ResponseEntity<StatusLogin>cekUserLoginValid(@RequestBody UserAdmin userAdmin){
         System.out.println(userAdmin.getUsername());
-        return ResponseEntity.ok().body(koneksiJdbc.cekLoginValid(userAdmin));
+        return ResponseEntity.ok().body(loginJdbc.cekLoginValid(userAdmin));
     }
 
 

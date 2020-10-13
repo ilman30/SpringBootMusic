@@ -2,18 +2,17 @@ package com.ilman.music.model;
 
 public class AkunAdmin {
 
+    private String id;
     private String username;
     private String keyword;
-    private Integer groupId;
+    
+    public String getId() {
+        return this.id;
+    }
 
-	public Integer getGroupId() {
-		return this.groupId;
-	}
-
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
-	}
-
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return this.username;

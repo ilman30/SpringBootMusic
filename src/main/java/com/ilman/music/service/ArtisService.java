@@ -5,7 +5,8 @@
  */
 package com.ilman.music.service;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.ArtisJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.Artis;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
@@ -30,12 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ArtisService {
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private ArtisJdbc artisJdbc;
     
     public DataTablesResponse<Artis> listArtisDataTable (DataTablesRequest req) {
         DataTablesResponse dataTableRespon = new DataTablesResponse();
-        dataTableRespon.setData(koneksiJdbc.getListArtis(req));
-        Integer total = koneksiJdbc.getBanyakArtis(req);
+        dataTableRespon.setData(artisJdbc.getListArtis(req));
+        Integer total = artisJdbc.getBanyakArtis(req);
         dataTableRespon.setRecordsFiltered(total);
         dataTableRespon.setRecordsTotal(total);
         dataTableRespon.setDraw(req.getDraw());
@@ -76,7 +77,7 @@ public class ArtisService {
     }
 
     public void deleteById(Integer id) throws DataAccessException{
-        koneksiJdbc.deleteArtis(id);
+        artisJdbc.deleteArtis(id);
     }
     
     

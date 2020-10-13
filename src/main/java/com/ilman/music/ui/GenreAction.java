@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.GenreJdbc;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.model.Genre;
@@ -28,12 +28,12 @@ public class GenreAction {
     private GenreService genreService;
 
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private GenreJdbc genreJdbc;
 
     @PostMapping("/api/savegenrejson")
     public ResponseEntity <Map<String,Object>> savegenrejson(@RequestBody Genre genre){
         Map<String, Object> status = new HashMap<>();
-        koneksiJdbc.insertOrUpdateGenre(genre);
+        genreJdbc.insertOrUpdateGenre(genre);
         status.put("pesan", "Simpan Berhasil");
         return ResponseEntity.ok().body(status);
     }
@@ -45,7 +45,7 @@ public class GenreAction {
     
     @GetMapping(path= "/api/listgenrejson")
     public ResponseEntity<List<Genre>> listGenreCariJson(){
-        return ResponseEntity.ok().body(koneksiJdbc.getGenre());
+        return ResponseEntity.ok().body(genreJdbc.getGenre());
     }
     
     @DeleteMapping("/api/delete/{id}")

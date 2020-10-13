@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.ArtisJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.Artis;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
@@ -33,12 +34,12 @@ public class ArtisAction {
     private ArtisService artisService;
 
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private ArtisJdbc artisJdbc;
 
     @PostMapping("/api/saveartisjson")
     public ResponseEntity <Map<String,Object>> saveartisjson(@RequestBody Artis artis){
         Map<String, Object> status = new HashMap<>();
-        koneksiJdbc.insertOrUpdateArtis(artis);
+        artisJdbc.insertOrUpdateArtis(artis);
         status.put("pesan", "Simpan Berhasil");
         return ResponseEntity.ok().body(status);
     }
@@ -50,7 +51,7 @@ public class ArtisAction {
     
     @GetMapping(path= "/api/listartisjson")
     public ResponseEntity<List<Artis>> listArtisCariJson(){
-        return ResponseEntity.ok().body(koneksiJdbc.getArtis());
+        return ResponseEntity.ok().body(artisJdbc.getArtis());
     }
     
     @PostMapping("/api/uploadartis")

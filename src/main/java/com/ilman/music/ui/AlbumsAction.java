@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.AlbumsJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.Albums;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
@@ -33,17 +34,17 @@ public class AlbumsAction {
     private AlbumsService albumsService;
 
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private AlbumsJdbc albumsJdbc;
 
     @GetMapping(path= "/api/listalbumsjson")
     public ResponseEntity<List<Albums>> listAlbumsCariJson(){
-        return ResponseEntity.ok().body(koneksiJdbc.getAlbums());
+        return ResponseEntity.ok().body(albumsJdbc.getAlbums());
     }
     
     @PostMapping("/api/savealbumsjson")
     public ResponseEntity <Map<String,Object>> savealbumsjson(@RequestBody Albums albums){
         Map<String, Object> status = new HashMap<>();
-        koneksiJdbc.insertOrUpdateAlbums(albums);
+        albumsJdbc.insertOrUpdateAlbums(albums);
         status.put("pesan", "Simpan Berhasil");
         return ResponseEntity.ok().body(status);
     }
@@ -55,7 +56,7 @@ public class AlbumsAction {
         
     @GetMapping(path = "/api/listalbumsjson/{id}")
     public ResponseEntity<List<Albums>> findByArtis(@PathVariable("id") Integer id){
-        return ResponseEntity.ok().body(koneksiJdbc.getAlbumsByArtis(id));
+        return ResponseEntity.ok().body(albumsJdbc.getAlbumsByArtis(id));
     }
 
     @PostMapping("/api/uploadalbums")

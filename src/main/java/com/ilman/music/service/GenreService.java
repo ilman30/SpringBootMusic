@@ -5,7 +5,8 @@
  */
 package com.ilman.music.service;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.GenreJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.model.Genre;
@@ -20,12 +21,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class GenreService {
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private GenreJdbc genreJdbc;
     
     public DataTablesResponse<Genre> listGenreDataTable (DataTablesRequest req) {
         DataTablesResponse dataTableRespon = new DataTablesResponse();
-        dataTableRespon.setData(koneksiJdbc.getListGenre(req));
-        Integer total = koneksiJdbc.getBanyakGenre(req);
+        dataTableRespon.setData(genreJdbc.getListGenre(req));
+        Integer total = genreJdbc.getBanyakGenre(req);
         dataTableRespon.setRecordsFiltered(total);
         dataTableRespon.setRecordsTotal(total);
         dataTableRespon.setDraw(req.getDraw());
@@ -33,7 +34,7 @@ public class GenreService {
     }
     
     public void deleteById(Integer id) throws DataAccessException{
-        koneksiJdbc.deleteGenre(id);
+        genreJdbc.deleteGenre(id);
     }
     
 }

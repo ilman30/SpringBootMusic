@@ -5,7 +5,8 @@
  */
 package com.ilman.music.service;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.AlbumsJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.Albums;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
@@ -30,15 +31,15 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class AlbumsService {
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private AlbumsJdbc albumsJdbc;
 
     @Value("${upload.albums}")
     private String pathFile;
     
     public DataTablesResponse<Albums> listAlbumsDataTable (DataTablesRequest req) {
         DataTablesResponse dataTableRespon = new DataTablesResponse();
-        dataTableRespon.setData(koneksiJdbc.getListAlbums(req));
-        Integer total = koneksiJdbc.getBanyakAlbums(req);
+        dataTableRespon.setData(albumsJdbc.getListAlbums(req));
+        Integer total = albumsJdbc.getBanyakAlbums(req);
         dataTableRespon.setRecordsFiltered(total);
         dataTableRespon.setRecordsTotal(total);
         dataTableRespon.setDraw(req.getDraw());
@@ -76,7 +77,7 @@ public class AlbumsService {
     }
 
     public void deleteById(Integer id) throws DataAccessException{
-        koneksiJdbc.deleteAlbums(id);
+        albumsJdbc.deleteAlbums(id);
     }
     
 }

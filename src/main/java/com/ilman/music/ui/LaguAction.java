@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ilman.music.impl.KoneksiJdbc;
+import com.ilman.music.impl.LaguJdbc;
+import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.DataTablesRequest;
 import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.model.Lagu;
@@ -33,12 +34,12 @@ public class LaguAction {
     private LaguService laguService;
 
     @Autowired
-    private KoneksiJdbc koneksiJdbc;
+    private LaguJdbc laguJdbc;
 
     @PostMapping("/api/savelagujson")
     public ResponseEntity <Map<String,Object>> savelagujson(@RequestBody Lagu lagu){
         Map<String, Object> status = new HashMap<>();
-        koneksiJdbc.insertOrUpdateLagu(lagu);
+        laguJdbc.insertOrUpdateLagu(lagu);
         status.put("pesan", "Simpan Berhasil");
         return ResponseEntity.ok().body(status);
     }
@@ -50,17 +51,17 @@ public class LaguAction {
     
     @GetMapping(path = "/api/listlagujson/{id}")
     public ResponseEntity<List<Lagu>> findByAlbums(@PathVariable("id") Integer id){
-        return ResponseEntity.ok().body(koneksiJdbc.getLaguByAlbums(id));
+        return ResponseEntity.ok().body(laguJdbc.getLaguByAlbums(id));
     }
     
     @GetMapping(path = "/api/listlagubygenrejson/{idx}")
     public ResponseEntity<List<Lagu>> findByGenre(@PathVariable("idx") Integer id){
-        return ResponseEntity.ok().body(koneksiJdbc.getLaguByGenre(id));
+        return ResponseEntity.ok().body(laguJdbc.getLaguByGenre(id));
     }
     
     @GetMapping(path= "/api/listlagujson")
     public ResponseEntity<List<Lagu>> listLaguCariJson(){
-        return ResponseEntity.ok().body(koneksiJdbc.getLagu());
+        return ResponseEntity.ok().body(laguJdbc.getLagu());
     }
 
     @DeleteMapping("/api/deleteLagu/{id}")
