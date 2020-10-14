@@ -5,25 +5,11 @@
  */
 package com.ilman.music.impl;
 
-import com.ilman.music.dto.AkunAdminDto;
-import com.ilman.music.model.AkunAdmin;
-import com.ilman.music.model.Albums;
-import com.ilman.music.model.Artis;
-import com.ilman.music.model.DataTablesRequest;
-import com.ilman.music.model.Genre;
-
-import com.ilman.music.model.Lagu;
+import com.ilman.music.model.GroupUser;
 import com.ilman.music.model.Roles;
-import com.ilman.music.model.StatusLogin;
-import com.ilman.music.model.UserAdmin;
 
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +36,32 @@ public class RolesJdbc {
         String SQL = "select id_role as idRole, role_name as namaRole from  roles";
         List<Roles> la = jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(Roles.class));
         return la;
+    }
+
+    public boolean checkingSuperAdmin(String idUser){
+        String baseQuery="select id , id_group as idGroup, id_user as idUser from group_user " +
+                "where id_user = ? and id_group = 1";
+        boolean isCheck = false;
+        try{
+            Optional<GroupUser> hasil = Optional.of(jdbcTemplate.queryForObject(baseQuery, (rs, rownum) ->{
+                GroupUser groupUser = new GroupUser();
+                groupUser.setId(rs.getString("id"));
+                groupUser.setIdGroup(rs.getInt("idGroup"));
+                groupUser.setIdUser(rs.getString("idUser"));
+                return groupUser;
+            },idUser));
+            if (hasil != null){
+                isCheck = true;
+                return isCheck;
+            } else{
+                isCheck = false;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            isCheck = false;
+        }
+        System.out.println(isCheck);
+        return isCheck;
     }
 
 

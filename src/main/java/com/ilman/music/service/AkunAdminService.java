@@ -20,16 +20,6 @@ public class AkunAdminService {
     @Autowired
     private AkunAdminJdbc akunAdminJdbc;
 
-    public DataTablesResponse<AkunAdmin> listAkunDataTable (DataTablesRequest req) {
-        DataTablesResponse dataTableRespon = new DataTablesResponse();
-        dataTableRespon.setData(akunAdminJdbc.getListAkun(req));
-        Integer total = akunAdminJdbc.getBanyakAkun(req);
-        dataTableRespon.setRecordsFiltered(total);
-        dataTableRespon.setRecordsTotal(total);
-        dataTableRespon.setDraw(req.getDraw());
-        return dataTableRespon;
-    }
-
     public void saveAdmin(AkunAdminDto.New akunAdminDto) throws SQLException {
         akunAdminDto.setId(UUID.randomUUID().toString());
         Map<String, Object> paramRegAcc = new HashMap<>();

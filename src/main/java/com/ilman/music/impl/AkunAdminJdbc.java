@@ -126,7 +126,7 @@ public class AkunAdminJdbc {
         return prop;
     }
 
-    public Optional<AkunAdmin> getAkunById(int id){
+    public Optional<AkunAdmin> getAkunById(String id){
         String SQL = "SELECT id,username FROM akun_admin where id = ?";
         Object param[] = {id};
         try {
@@ -134,32 +134,6 @@ public class AkunAdminJdbc {
         }catch (Exception e) {
             return Optional.empty();
         }
-    }
-
-    public List<AkunAdmin> getListAkun(DataTablesRequest req) {
-        String SQL = "SELECT id,username FROM akun_admin "
-                + "order by "+(req.getSortCol()+1)+"  "+req.getSortDir() +" limit ? offset ?";
-        if(!req.getExtraParam().isEmpty()){
-            String username = (String) req.getExtraParam().get("username");
-            SQL = "SELECT id,username FROM akun_admin where username like concat('%',?,'%')"
-                + " order by "+(req.getSortCol()+1)+"  "+req.getSortDir() +" limit ? offset ?";
-            return jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(AkunAdmin.class), username, req.getLength(), req.getStart());
-        }else{
-            return jdbcTemplate.query(SQL, BeanPropertyRowMapper.newInstance(AkunAdmin.class), req.getLength(), req.getStart());
-        }
-        
-    }
-
-    public Integer getBanyakAkun(DataTablesRequest req) {
-        String query = "SELECT count(id) as banyak FROM akun_admin";
-        if(!req.getExtraParam().isEmpty()){
-            String username = (String) req.getExtraParam().get("username");
-            query = " SELECT count(id) as banyak FROM akun_admin where username like concat('%',?,'%')";
-            return jdbcTemplate.queryForObject(query, Integer.class, username);
-        }else{
-            return this.jdbcTemplate.queryForObject(query, null, Integer.class);
-        }
-        
     }
     
 }

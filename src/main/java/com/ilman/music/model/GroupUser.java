@@ -3,6 +3,7 @@ package com.ilman.music.model;
 public class GroupUser {
 
     private String id;
+    private Integer idGroup;
     private String idUser;
     private Integer idRole;
     private String username;
@@ -14,6 +15,14 @@ public class GroupUser {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getIdGroup() {
+        return this.idGroup;
+    }
+
+    public void setIdGroup(Integer idGroup) {
+        this.idGroup = idGroup;
     }
 
     public String getIdUser() {

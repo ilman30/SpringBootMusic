@@ -8,16 +8,14 @@ import java.util.Optional;
 
 import com.ilman.music.dto.AkunAdminDto;
 import com.ilman.music.impl.AkunAdminJdbc;
-import com.ilman.music.impl.RolesJdbc;
 import com.ilman.music.model.AkunAdmin;
-import com.ilman.music.model.DataTablesRequest;
-import com.ilman.music.model.DataTablesResponse;
 import com.ilman.music.service.AkunAdminService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,7 +53,7 @@ public class AkunAdminAction {
     }
 
     @GetMapping(path="/api/listakunjson/{id}")
-    public ResponseEntity<AkunAdmin> listAkunByIdJson(@PathVariable("id") int id ){
+    public ResponseEntity<AkunAdmin> listAkunByIdJson(@PathVariable("id") String id ){
         Optional<AkunAdmin> hasil = akunAdminJdbc.getAkunById(id);
         if(hasil.isPresent()){
             return ResponseEntity.ok().body(hasil.get());
@@ -64,9 +62,10 @@ public class AkunAdminAction {
         }
     }
 
-    @PostMapping(path="/api/listakundatajson")
-    public ResponseEntity<DataTablesResponse<AkunAdmin>> listAkunDataTable(@RequestBody DataTablesRequest dataRequest){
-        return ResponseEntity.ok().body(akunAdminService.listAkunDataTable(dataRequest));
+    @GetMapping(path = "/usermanajemenlist/{id}")
+    public String akunAdminDetail(@PathVariable("id") String id, Model model ){
+        model.addAttribute("provinsi", akunAdminJdbc.getAkunById(id).get());
+        return "usermanajemenlist";
     }
 
 }
