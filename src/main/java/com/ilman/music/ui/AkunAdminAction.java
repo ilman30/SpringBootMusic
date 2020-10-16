@@ -53,19 +53,9 @@ public class AkunAdminAction {
     }
 
     @GetMapping(path="/api/listakunjson/{id}")
-    public ResponseEntity<AkunAdmin> listAkunByIdJson(@PathVariable("id") String id ){
-        Optional<AkunAdmin> hasil = akunAdminJdbc.getAkunById(id);
-        if(hasil.isPresent()){
-            return ResponseEntity.ok().body(hasil.get());
-        }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
+    public ResponseEntity<List<AkunAdmin>> listAkunByIdJson(@PathVariable("id") String id ){
+        return ResponseEntity.ok().body(akunAdminJdbc.getAkunById(id));
     }
 
-    @GetMapping(path = "/usermanajemenlist/{id}")
-    public String akunAdminDetail(@PathVariable("id") String id, Model model ){
-        model.addAttribute("provinsi", akunAdminJdbc.getAkunById(id).get());
-        return "usermanajemenlist";
-    }
-
+    
 }

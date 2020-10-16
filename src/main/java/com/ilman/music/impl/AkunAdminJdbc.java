@@ -125,14 +125,16 @@ public class AkunAdminJdbc {
         List<AkunAdmin> prop = jdbcTemplate.query(baseQuery, BeanPropertyRowMapper.newInstance(AkunAdmin.class));
         return prop;
     }
-    public Optional<AkunAdmin> getAkunById(String id){
-        String SQL = "SELECT id,username FROM akun_admin where id = ?";
-        Object param[] = {id};
-        try {
-            return Optional.of (jdbcTemplate.queryForObject(SQL, param, BeanPropertyRowMapper.newInstance(AkunAdmin.class)));
-        }catch (Exception e) {
-            return Optional.empty();
-        }
+    public List<AkunAdmin> getAkunById(String id) throws EmptyResultDataAccessException {
+        String baseQuery = "select id as id, username as username from akun_admin where id = ?";
+        Object[] param = {id};
+
+        return jdbcTemplate.query(baseQuery, param,  (rs, rowNUm) -> {
+            AkunAdmin akunAdmin = new AkunAdmin();
+            akunAdmin.setUsername(rs.getString("username"));
+            akunAdmin.setId(rs.getString("id"));
+            return akunAdmin;
+        });
     }
     
 }
