@@ -8,6 +8,7 @@ public class GroupUser {
     private Integer idRole;
     private String username;
     private String roleName;
+    private boolean isCheck;
 
     public String getId() {
         return this.id;
@@ -57,4 +58,12 @@ public class GroupUser {
         this.roleName = roleName;
     }
     
+    public boolean isIsCheck() {
+        return this.isCheck;
+    }
+
+    public void setIsCheck(boolean isCheck) {
+        this.isCheck = isCheck;
+    }
+
 }

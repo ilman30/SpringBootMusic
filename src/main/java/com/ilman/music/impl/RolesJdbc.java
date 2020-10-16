@@ -38,9 +38,10 @@ public class RolesJdbc {
         return la;
     }
 
-    public boolean checkingSuperAdmin(String idUser){
+    public GroupUser checkingSuperAdmin(String idUser){
         String baseQuery="select id , id_group as idGroup, id_user as idUser from group_user " +
                 "where id_user = ? and id_group = 1";
+        GroupUser groupUsers = new GroupUser();
         boolean isCheck = false;
         try{
             Optional<GroupUser> hasil = Optional.of(jdbcTemplate.queryForObject(baseQuery, (rs, rownum) ->{
@@ -52,17 +53,22 @@ public class RolesJdbc {
             },idUser));
             if (hasil != null){
                 isCheck = true;
-                return isCheck;
+                groupUsers.setId(hasil.get().getId());
+                groupUsers.setIdUser(hasil.get().getIdUser());
+                groupUsers.setIsCheck(isCheck);
+                return groupUsers;
             } else{
                 isCheck = false;
+                groupUsers.setIsCheck(isCheck);
             }
         } catch (Exception e){
             e.printStackTrace();
             isCheck = false;
+            groupUsers.setIsCheck(isCheck);
         }
-        System.out.println(isCheck);
-        return isCheck;
+        return groupUsers;
     }
+
 
 
 }

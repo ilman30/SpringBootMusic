@@ -3,6 +3,7 @@ package com.ilman.music.ui;
 import java.util.List;
 
 import com.ilman.music.impl.RolesJdbc;
+import com.ilman.music.model.GroupUser;
 import com.ilman.music.model.Roles;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ public class RolesAction {
         return ResponseEntity.ok().body(rolesJdbc.getRoles());
     }
 
-    @PostMapping("/api/checkingsuperadmin")
-    public ResponseEntity<Boolean>cekSuperAdmi(@RequestBody String idUser){
+    @PostMapping(path = "/checkingsuperadmin")
+    public ResponseEntity<GroupUser> checkingSuperAdmin(@RequestBody String idUser){
         return ResponseEntity.ok().body(rolesJdbc.checkingSuperAdmin(idUser));
     }
     
